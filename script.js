@@ -32,5 +32,15 @@ async function getRandomQuote() {
     }
 }
 
+// Tweet Quote
+function tweetQuote() {
+    const twitterUrl = `https://twitter.com/intent/tweet?text=${quoteText.textContent} - ${authorText.textContent}`;
+    window.open(twitterUrl, '_blank');
+}
+
+// Event listeners
+newQuoteButton.addEventListener('click', getRandomQuote);
+twitterButton.addEventListener('click', tweetQuote);
+
 // On Load
 getRandomQuote();
