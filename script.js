@@ -49,12 +49,15 @@ async function getRandomQuote() {
     } catch (error) {
         // handle errors here
         console.log('Quote fetch failed', error);
+        // get quote again
+        getRandomQuote();
     }
 }
 
 // Tweet Quote
 function tweetQuote() {
     const twitterUrl = `https://twitter.com/intent/tweet?text=${quoteText.textContent} - ${authorText.textContent}`;
+    // open in new tab
     window.open(twitterUrl, '_blank');
 }
 
