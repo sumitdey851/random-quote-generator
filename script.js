@@ -48,6 +48,7 @@ async function getRandomQuote() {
         })
     } catch (error) {
         // handle errors here
+        console.log('Quote fetch failed', error);
     }
 }
 
