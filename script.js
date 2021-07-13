@@ -50,7 +50,7 @@ async function getQuotes() {
     apiQuotes = await response.json();
     newQuote();
   } catch (error) {
-    // Catch Error Here
+    console.log("Failed to fetch api", error);
   }
 }
 
