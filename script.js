@@ -1,71 +1,68 @@
-// Define constants for HTML elements
 const quoteContainer = document.getElementById('quote-container');
 const quoteText = document.getElementById('quote');
 const authorText = document.getElementById('author');
-const twitterButton = document.getElementById('twitter');
-const newQuoteButton = document.getElementById('new-quote');
+const twitterBtn = document.getElementById('twitter');
+const newQuoteBtn = document.getElementById('new-quote');
 const loader = document.getElementById('loader');
 
-function showLoadingSpinner() {
-    loader.hidden = false;
-    quoteContainer.hidden = true;
+let apiQuotes = [];
+
+// Loading Spinner Shown
+function loading() {
+  loader.hidden = false;
+  quoteContainer.hidden = true;
 }
 
-function removeLoadingSpinner() {
-    quoteContainer.hidden = false;
-    loader.hidden = true;
+// Remove Loading Spinner
+function complete() {
+  quoteContainer.hidden = false;
+  loader.hidden = true;
 }
 
+// Show New Quote
+function newQuote() {
+  loading();
+  // Pick a random quote from array
+  const quote = apiQuotes[Math.floor(Math.random() * apiQuotes.length)];
+  // Check if Author field is blank and replace it with 'Unknown'
+  if (!quote.author) {
+    authorText.textContent = 'Unknown';
+  } else {
+    authorText.textContent = quote.author;
+  }
+  // Check Quote length to determine styling
+  if (quote.text.length > 120) {
+    quoteText.classList.add('long-quote');
+  } else {
+    quoteText.classList.remove('long-quote');
+  }
+  // Set Quote, Hide Loader
+  quoteText.textContent = quote.text;
+  complete();
+}
 
 // Get Quotes From API
-async function getRandomQuote() {
-    showLoadingSpinner();
-    // define a proxyUrl to avoid CORS issue
-    const apiUrl = 'https://api.quotable.io/random';
-    //used in catch block as a terminating condition
-    let maxRequests = 0; 
-    try {
-        const response = await fetch(apiUrl);
-        const data = response.json();
-        // Set quoteText and authorText
-        data.then(function(result) {
-
-            // Check quote length to determine styling
-            if (result.content.length > 120)
-                quoteText.classList.add('long-quote');
-            else
-                quoteText.classList.remove('long-quote');
-
-            quoteText.textContent = result.content;
-            
-            // If author is unknown
-            if (!result.author)
-                authorText.textContent = 'Unknown';
-            else
-                authorText.textContent = result.author;
-            removeLoadingSpinner();
-        })
-    } catch (error) {
-        // handle errors here
-        console.log('Quote fetch failed', error);
-        // get quote again
-        if (maxRequests > 10)
-            alert('Something is not right. Please try again after sometime.');
-        else
-            getRandomQuote();
-    }
+async function getQuotes() {
+  loading();
+  const apiUrl = 'https://type.fit/api/quotes';
+  try {
+    const response = await fetch(apiUrl);
+    apiQuotes = await response.json();
+    newQuote();
+  } catch (error) {
+    // Catch Error Here
+  }
 }
 
 // Tweet Quote
 function tweetQuote() {
-    const twitterUrl = `https://twitter.com/intent/tweet?text=${quoteText.textContent} - ${authorText.textContent}`;
-    // open in new tab
-    window.open(twitterUrl, '_blank');
+  const twitterUrl = `https://twitter.com/intent/tweet?text=${quoteText.innerText} - ${authorText.innerText}`;
+  window.open(twitterUrl, '_blank');
 }
 
-// Event listeners
-newQuoteButton.addEventListener('click', getRandomQuote);
-twitterButton.addEventListener('click', tweetQuote);
+// Event Listeners
+newQuoteBtn.addEventListener('click', newQuote);
+twitterBtn.addEventListener('click', tweetQuote);
 
 // On Load
-getRandomQuote();
+getQuotes();
