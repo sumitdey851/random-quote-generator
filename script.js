@@ -22,9 +22,9 @@ async function getRandomQuote() {
     showLoadingSpinner();
     // define a proxyUrl to avoid CORS issue
     const apiUrl = 'https://api.quotable.io/random';
-    try {
-        //used in catch block as a terminating condition
-        let maxRequests = 0; 
+    //used in catch block as a terminating condition
+    let maxRequests = 0;
+    try { 
         const response = await fetch(apiUrl);
         const data = response.json();
         // Set quoteText and authorText
